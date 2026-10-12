@@ -1,3 +1,3 @@
-# controller
+# Organização da equipe
 
-Entrada HTTP da API. Inclui o tratamento genérico de erros fornecido pelo template.
+Consulte o README da raiz e docs/divisao-da-equipe.md para responsabilidades e situação de cada entidade.

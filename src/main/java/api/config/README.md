@@ -1,3 +1,3 @@
-# config
+# Organização da equipe
 
-Configurações da aplicação, incluindo a identificação da documentação OpenAPI.
+Consulte o README da raiz e docs/divisao-da-equipe.md para responsabilidades e situação de cada entidade.

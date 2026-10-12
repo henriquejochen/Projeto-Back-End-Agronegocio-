@@ -1,3 +1,3 @@
-# dto
+# Organização da equipe
 
-Objetos de entrada e saída da API. Os DTOs genéricos de erro foram preservados do template.
+Consulte o README da raiz e docs/divisao-da-equipe.md para responsabilidades e situação de cada entidade.

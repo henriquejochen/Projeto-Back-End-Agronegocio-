@@ -1,3 +1,3 @@
-# Código da aplicação
+# Organização da equipe
 
-Organização inicial em camadas, baseada no template da disciplina. Cada subpasta descreve sua responsabilidade. Nenhuma funcionalidade de domínio foi implementada.
+Consulte o README da raiz e docs/divisao-da-equipe.md para responsabilidades e situação de cada entidade.
