@@ -1,17 +1,18 @@
 # Autoavaliação
 
-A preencher pelo grupo após as próximas etapas, conforme os critérios da disciplina.
-Esta estrutura inicial não representa a entrega completa.
+Preencher em conjunto após a integração. Esta base ainda não atende à entrega completa.
 
-| Critério | Situação |
+| Critério | Situação atual / verificação pendente |
 |---|---|
-| P1 — Execução seguindo o README | A avaliar |
-| P2 — Organização em camadas | A avaliar |
-| P3 — Migrations e entidades | A avaliar |
-| P4 — DTOs de entrada e saída | A avaliar |
-| P5 — Estrutura completa e documentada | A avaliar |
-| P6 — API simples | A avaliar |
-| P7 — Regras de negócio implementadas | A avaliar |
-| P8 — Regras que atendem ao tema | A avaliar |
-| P9 — Código igual ao desenho | A avaliar |
-| P10 — README completo | A avaliar |
+| P1 — Execução pelo README | Conferir em clone limpo com JDK 25 e PostgreSQL |
+| P2 — Camadas | Talhão organizado; conferir novamente após integrar |
+| P3 — Migrations e entidades | V1 e Talhao prontos; faltam Cultura e Plantio |
+| P4 — DTOs | Talhão pronto; faltam DTOs das outras entidades |
+| P5 — Estrutura e comentários | Talhão pronto; demais estruturas pendentes |
+| P6 — API simples | Implementada; ver evidências em validacao.md |
+| P7 — Três regras implementadas | Pendente: PlantioService |
+| P8 — Regras atendem ao tema | Regras de ocupação, irrigação e previsão definidas; falta execução |
+| P9 — Código igual ao desenho | Somente Talhão; completar diagrama e restante do código |
+| P10 — README | Preparado; atualizar status após integrar |
+
+Não estimar a nota antes da verificação final.
