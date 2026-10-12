@@ -1,3 +1,3 @@
-# exception
+# Organização da equipe
 
-Pasta reservada para futuras exceções específicas. As exceções genéricas permanecem em api.service, conforme o template da disciplina.
+Consulte o README da raiz e docs/divisao-da-equipe.md para responsabilidades e situação de cada entidade.

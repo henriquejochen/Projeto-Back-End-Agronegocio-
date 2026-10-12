@@ -1,3 +1,3 @@
-# Migrations
+# Organização da equipe
 
-Pasta reservada para as migrations Flyway. As tabelas serão definidas após o modelo de domínio; ainda não há migrations SQL.
+Consulte o README da raiz e docs/divisao-da-equipe.md para responsabilidades e situação de cada entidade.

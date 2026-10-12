@@ -11,8 +11,8 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI apiDoProjeto() {
         return new OpenAPI().info(new Info()
-                .title("Agronegócio — Backend")
+                .title("Controle de Plantios")
                 .version("0.1.0")
-                .description("Projeto da disciplina de Backend. Estrutura inicial em desenvolvimento."));
+                .description("Cadastro de talhões. Cultura e Plantio serão adicionados pela equipe."));
     }
 }
