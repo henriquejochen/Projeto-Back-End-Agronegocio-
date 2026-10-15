@@ -1,6 +1,6 @@
 # Autoavaliação
 
-Avaliação provisória do estado local, baseada nos arquivos, nos testes manuais de Cultura e na suíte de integração com PostgreSQL. Revisar a cópia publicada no GitHub e executar com JDK 25 antes da entrega.
+Avaliação provisória do estado local, baseada nos arquivos, nos testes manuais de Cultura e na suíte de integração com PostgreSQL. Validação com JDK 25 concluída em 15/10/2026: verify aprovado com 9 testes sem falhas, erros ou ignorados. Revisar a cópia publicada no GitHub antes da entrega.
 
 - ✅ atende: 0,5 ponto
 - ◐ atende em parte: 0,25 ponto
@@ -8,7 +8,7 @@ Avaliação provisória do estado local, baseada nos arquivos, nos testes manuai
 
 | Critério | Marca | Evidência e pendência |
 |---|---|---|
-| P1 A API sobe seguindo o README | ◐ | Aplicação iniciou nos testes com PostgreSQL novo e V1–V3; empacotamento passou. Falta conferir clone limpo com JDK 25; validação realizada com JDK 27 e release 25. |
+| P1 A API sobe seguindo o README | ◐ | Aplicação iniciou nos testes com PostgreSQL novo e V1–V3; empacotamento passou. Verify aprovado com Microsoft JDK 25.0.4.1 em 15/10/2026. Falta conferir clone limpo. |
 | P2 Cada classe no pacote da sua camada | ✅ | Três entidades organizadas em controller, service, mapper, repository, model e dto, com exceções em service. |
 | P3 Migrations e @Entity de todas as tabelas | ✅ | V1/Talhao, V2/Cultura e V3/Plantio; duas FKs, schema validado pelo Hibernate e migrations aplicadas no PostgreSQL dos testes. |
 | P4 DTOs de entrada e saída de todas as entidades | ✅ | DTOs das três entidades, ColheitaRequestDTO e respostas com DTOs aninhados; nenhuma entidade exposta no Controller. |
@@ -24,7 +24,7 @@ Avaliação provisória do estado local, baseada nos arquivos, nos testes manuai
 ## Antes de entregar
 
 1. Revisar a implementação com os três integrantes, incluindo bloqueios e regras no PlantioService.
-2. Reiniciar a aplicação na pasta agronegocio-git para aplicar V3 no banco local e conferir o Swagger.
+2. Completar os cenários manuais pendentes em docs/validacao.md e conferir persistência após reinício.
 3. Executar o roteiro do README em clone limpo com JDK 25 e verificar o resultado de mvnw verify.
 4. Fazer commit e enviar as alterações à main; conferir README, diagrama e autoavaliação no GitHub.
 5. Preparar a demonstração de cadastro, consultas, 400/404, R1/R2 e previsão calculada.

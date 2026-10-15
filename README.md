@@ -203,7 +203,7 @@ Para compilar, testar e empacotar:
 | Estrutura | Talhão, Cultura e Plantio com migrations, entidades, DTOs e todas as camadas |
 | API e regras | Cadastro e consultas das três entidades, colheita e R1–R3 implementados; 9 testes de integração aprovados |
 
-**Ainda não funciona:** nenhuma funcionalidade prevista para esta etapa está pendente de implementação. Ainda falta conferir a entrega em clone limpo com JDK 25, revisar o Swagger após reiniciar a aplicação e enviar estas alterações ao GitHub. A validação automatizada usou JDK 27 compilando para Java 25.
+**Validação em 15/10/2026:** `mvnw.cmd -B verify` executado com Microsoft JDK 25.0.4.1 e Docker Desktop: **9 testes, 0 falhas, 0 erros, 0 ignorados e BUILD SUCCESS**, com JAR executável gerado. Os testes manuais confirmaram cadastro/listagem de plantios, previsão, liberação de área após colheita e bloqueio de excesso pela R1. Veja as evidências e os cenários restantes em [validação](docs/validacao.md). Ainda falta conferir a entrega em clone limpo e completar os cenários manuais documentados.
 
 ## Documentação
 

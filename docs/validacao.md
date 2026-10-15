@@ -4,9 +4,9 @@
 
 A suíte src/test/java/api/PlantioApiTest.java executa a API HTTP em porta aleatória contra PostgreSQL 16-alpine temporário gerenciado por Testcontainers. As migrations V1, V2 e V3 são aplicadas do zero e o Hibernate valida as entidades. O banco local projeto não é usado nem apagado.
 
-Resultado desta revisão: **9 testes executados, 0 falhas, 0 erros e 0 ignorados**. Maven test concluiu com BUILD SUCCESS. O empacotamento posterior com package -DskipTests também concluiu com BUILD SUCCESS e gerou o JAR executável.
+Validação em 15/10/2026: **9 testes executados, 0 falhas, 0 erros e 0 ignorados**. O comando `mvnw.cmd -B verify` concluiu com **BUILD SUCCESS**, executou a suíte e gerou o JAR executável. Resultado conferido em `target/surefire-reports/api.PlantioApiTest.txt`. A execução anterior pelo IntelliJ também terminou com código 0.
 
-Ambiente utilizado: JDK 27, compilação com release 25 declarado no pom.xml, Docker e PostgreSQL 16.15. Falta repetir a entrega em clone limpo com JDK 25.
+Ambiente utilizado nesta validação: Windows 11, Microsoft JDK 25.0.4.1, Maven 3.9.12 e Docker Desktop, com PostgreSQL 16-alpine temporário via Testcontainers. A execução ocorreu na cópia local do IntelliJ; a conferência em clone limpo permanece pendente.
 
 | Teste | O que comprova |
 |---|---|
@@ -34,6 +34,17 @@ Para compilar, testar e empacotar:
 
 A primeira execução pode baixar dependências e imagens. A suíte exige Docker; não ignora silenciosamente os testes quando o banco temporário não pode iniciar. Relatórios são gerados em target/surefire-reports e não devem ser versionados.
 
+## Talhão e Plantio — testes manuais em 15/10/2026
+
+Validação pelo Swagger confirmada por Henrique:
+
+- Talhão cadastrado com 10 hectares e irrigação habilitada; retornou nos dados dos plantios.
+- Plantios de milho e aipim cadastrados com 6 hectares e ciclo de 100 dias; a listagem retornou os relacionamentos e a previsão 2027-01-09 para plantio em 2026-10-01.
+- Colheita do milho registrada em 2026-10-15; sua área foi liberada e permitiu cadastrar o aipim no mesmo talhão.
+- Nova tentativa de cadastrar 6 hectares com o aipim ainda ativo foi bloqueada pela R1, conforme confirmação do usuário.
+
+Esses resultados confirmam os cenários descritos. Os demais casos manuais abaixo continuam como roteiro de conferência; R2, R3 e as regras de colheita também estão cobertas pela suíte automatizada aprovada.
+
 ## Cultura — histórico dos testes manuais
 
 Os resultados abaixo foram compartilhados em capturas e confirmados por Henrique durante a sessão, com a API na porta 8081.
@@ -49,7 +60,7 @@ Os resultados abaixo foram compartilhados em capturas e confirmados por Henrique
 | Listagem | 200 com registros válidos | Confirmação manual de Henrique |
 | Consulta após reiniciar | Registros preservados | Confirmação manual de Henrique |
 
-Tentativas antigas de build offline não concluídas foram superadas nesta revisão: as dependências foram obtidas e testes/empacotamento passaram. Isso não substitui a conferência final com JDK 25 e a versão publicada.
+Tentativas antigas de build offline não concluídas foram superadas nesta revisão: as dependências foram obtidas e testes/empacotamento passaram. A validação atual também passou com JDK 25; resta conferir a entrega em clone limpo e a versão publicada.
 
 ## Roteiro de demonstração manual
 
@@ -70,5 +81,5 @@ As datas do roteiro são exemplos; ajuste-as se necessário. Para decidir se uma
 - Repetir clone, execução e verify com JDK 25 seguindo o README.
 - Revisar os cenários manuais de Talhão: cadastro/consultas, 400/404, limites de área e persistência após reinício.
 - Cultura: conferir nome maior que 100 caracteres, campos nulos, ciclos nos limites 1 e 3650 e lista vazia em ambiente isolado.
-- Reiniciar a aplicação local para carregar a implementação e aplicar V3; o banco de produção local não foi alterado pelos testes.
-- Revisar e enviar os arquivos ao GitHub e conferir a apresentação com a equipe.
+- Conferir a persistência dos cadastros manuais após reiniciar a aplicação local; o banco local não foi usado pela suíte automatizada.
+- Conferir a versão publicada no GitHub e a apresentação com a equipe.
