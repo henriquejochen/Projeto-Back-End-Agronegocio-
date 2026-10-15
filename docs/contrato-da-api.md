@@ -2,7 +2,7 @@
 
 Base padrão: http://localhost:8080. Ao iniciar com --server.port=8081, use http://localhost:8081, como nos testes manuais de Cultura. JSON em camelCase, datas yyyy-MM-dd, áreas em hectares com até duas casas decimais.
 
-Talhão e Cultura estão implementados. A seção de Plantio define o contrato planejado e suas rotas ainda não estão disponíveis. Exemplos de IDs e horários são ilustrativos.
+Talhão, Cultura e Plantio estão implementados nesta cópia. A execução de Plantio ainda precisa ser validada no ambiente local. Exemplos de IDs e horários são ilustrativos.
 
 ## Convenções
 
@@ -25,15 +25,15 @@ Talhão e Cultura estão implementados. A seção de Plantio define o contrato p
 | POST | /culturas | Cadastra cultura | CulturaRequestDTO | CulturaResponseDTO | 201 | 400 | sim |
 | GET | /culturas | Lista por ID | Nenhuma | Lista de CulturaResponseDTO | 200 | — | sim |
 | GET | /culturas/{id} | Busca cultura | ID no caminho | CulturaResponseDTO | 200 | 400, 404 | sim |
-| POST | /plantios | Registra plantio | PlantioRequestDTO | PlantioResponseDTO | 201 | 400, 404 | não |
-| PUT | /plantios/{id}/colher | Registra colheita | ColheitaRequestDTO | PlantioResponseDTO | 200 | 400, 404 | não |
+| POST | /plantios | Registra plantio | PlantioRequestDTO | PlantioResponseDTO | 201 | 400, 404 | sim |
+| PUT | /plantios/{id}/colher | Registra colheita | ColheitaRequestDTO | PlantioResponseDTO | 200 | 400, 404 | sim |
 
 ### Rotas das regras de negócio
 
 | Verbo | Caminho | Regra | Sucesso | Erros | Situação |
 |---|---|---|---|---|---|
-| POST | /plantios | R1 (área), R2 (irrigação), R3 (previsão) | 201 | 400, 404 | Planejada |
-| PUT | /plantios/{id}/colher | Impedir repetição e datas inválidas; liberar área | 200 | 400, 404 | Planejada |
+| POST | /plantios | R1 (área), R2 (irrigação), R3 (previsão) | 201 | 400, 404 | Implementada |
+| PUT | /plantios/{id}/colher | Impedir repetição e datas inválidas; liberar área | 200 | 400, 404 | Implementada |
 
 Edição e exclusão genéricas não fazem parte do escopo. As rotas de colheita acima são necessárias para o fluxo de negócio.
 
@@ -45,9 +45,9 @@ Edição e exclusão genéricas não fazem parte do escopo. As rotas de colheita
 | TalhaoResponseDTO | saída | id, nome, areaHectares, irrigado | Implementado |
 | CulturaRequestDTO | entrada | nome, cicloDias, exigeIrrigacao | Nome não vazio até 100 caracteres; ciclo obrigatório de 1 a 3650; Boolean obrigatório |
 | CulturaResponseDTO | saída | id, nome, cicloDias, exigeIrrigacao | Implementado |
-| PlantioRequestDTO | entrada | talhaoId, culturaId, areaHectares, dataPlantio | Planejado: IDs positivos obrigatórios, área com limites de Talhão e data obrigatória |
-| PlantioResponseDTO | saída | id, talhao (TalhaoResponseDTO), cultura (CulturaResponseDTO), areaHectares, dataPlantio, previsaoColheita, dataColheita | Planejado: objetos DTO aninhados, previsão calculada e colheita inicialmente nula |
-| ColheitaRequestDTO | entrada | dataColheita | Planejado: obrigatória e não futura; Service impede data anterior ao plantio e segunda colheita |
+| PlantioRequestDTO | entrada | talhaoId, culturaId, areaHectares, dataPlantio | Implementado: IDs positivos obrigatórios, área com limites de Talhão e data obrigatória |
+| PlantioResponseDTO | saída | id, talhao (TalhaoResponseDTO), cultura (CulturaResponseDTO), areaHectares, dataPlantio, previsaoColheita, dataColheita | Implementado: objetos DTO aninhados, previsão calculada e colheita inicialmente nula |
+| ColheitaRequestDTO | entrada | dataColheita | Implementado: obrigatória e não futura; Service impede data anterior ao plantio e segunda colheita |
 
 ## Exemplos e comportamento
 
@@ -161,9 +161,9 @@ Exemplo de resposta para ID inexistente:
 }
 ~~~
 
-## Plantio — planejado para Thiago
+## Plantio — implementado por Thiago
 
-As respostas e regras abaixo são requisitos para implementação; não são evidências de funcionamento atual.
+Os exemplos abaixo descrevem o contrato implementado; não são resultados de testes executados.
 
 POST /plantios recebe:
 ~~~json
@@ -194,7 +194,7 @@ PUT /plantios/{id}/colher recebe:
 {"dataColheita":"2026-10-11"}
 ~~~
 
-Retornará 200 com o formato de resposta de plantio (incluindo talhao e cultura como DTOs) e dataColheita preenchida. A data será obrigatória, não futura e não anterior ao plantio. Segunda colheita retornará 400; plantio inexistente, 404. A previsão original não mudará. Thiago deverá validar os exemplos após a implementação.
+Retornará 200 com o formato de resposta de plantio (incluindo talhao e cultura como DTOs) e dataColheita preenchida. A data será obrigatória, não futura e não anterior ao plantio. Segunda colheita retornará 400; plantio inexistente, 404. A previsão original não mudará. Validar os exemplos no ambiente local.
 
 ## Erros
 

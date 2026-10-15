@@ -36,15 +36,15 @@ O produtor rural precisa saber quanto de cada talhão está ocupado, quais cultu
 
 | Quem | O que faz no sistema |
 |---|---|
-| Produtor ou responsável pelo manejo | Cadastra talhões e culturas; poderá registrar plantios e colheitas quando Plantio estiver implementado |
+| Produtor ou responsável pelo manejo | Cadastra talhões e culturas; registra plantios e colheitas |
 
 **Regras de negócio:** especificadas, ainda não implementadas. Validações de campos obrigatórios e números positivos nos DTOs não substituem essas regras.
 
 | # | Regra | Onde está no código | Rota que usa |
 |---|---|---|---|
-| R1 | A soma das áreas dos plantios ativos, incluindo o novo, não pode ultrapassar a área do talhão; igualdade é permitida | Pendente: PlantioService.criar | POST /plantios (planejada) |
-| R2 | Cultura que exige irrigação só pode ser plantada em talhão irrigado | Pendente: PlantioService.criar | POST /plantios (planejada) |
-| R3 | A previsão de colheita é calculada pela data de plantio mais o ciclo da cultura em dias | Pendente: PlantioService.criar | POST /plantios (planejada) |
+| R1 | A soma das áreas dos plantios ativos, incluindo o novo, não pode ultrapassar a área do talhão; igualdade é permitida | PlantioService.criar | POST /plantios (implementada) |
+| R2 | Cultura que exige irrigação só pode ser plantada em talhão irrigado | PlantioService.criar | POST /plantios (implementada) |
+| R3 | A previsão de colheita é calculada pela data de plantio mais o ciclo da cultura em dias | PlantioService.criar | POST /plantios (implementada) |
 
 R1 e R2 violadas deverão retornar 400 com a regra explicada. R3 será um cálculo automático. Plantio ativo terá data de colheita nula; registrar a colheita liberará sua área. A colheita não poderá anteceder o plantio, ser futura ou ser registrada duas vezes. O cadastro deverá proteger o limite de área também em requisições simultâneas.
 
@@ -65,15 +65,15 @@ R1 e R2 violadas deverão retornar 400 com a regra explicada. R3 será um cálcu
 
 Controller → Service → Repository → PostgreSQL. O Service usa o Mapper para converter entidades, DTOs e listas. Controllers usam somente DTOs; regras ficam no Service; tabelas são criadas por migrations. Dependências são injetadas pelo construtor.
 
-**Mapa da estrutura:** todas as entidades do modelo, incluindo Plantio ainda planejado. “Pendente” significa que o arquivo não existe; não equivale a classe montada.
+**Mapa da estrutura:** todas as entidades do modelo, incluindo Plantio implementado. “Pendente” significa que o arquivo não existe; não equivale a classe montada.
 
 | Entidade | Migration | Model | Repository | DTOs | Mapper | Service | Controller |
 |---|---|---|---|---|---|---|---|
 | Talhão | V1__criar_talhoes.sql, pronta | Talhao, implementada | TalhaoRepository, implementado | TalhaoRequestDTO / TalhaoResponseDTO, implementados | TalhaoMapper, implementado | TalhaoService, implementado | TalhaoController, implementado |
 | Cultura | V2__criar_culturas.sql, pronta | Cultura, implementada | CulturaRepository, implementado | CulturaRequestDTO / CulturaResponseDTO, implementados | CulturaMapper, implementado | CulturaService, implementado | CulturaController, implementado |
-| Plantio | V3__criar_plantios.sql, pendente | Plantio, pendente | PlantioRepository, pendente | PlantioRequestDTO / PlantioResponseDTO / ColheitaRequestDTO, pendentes | PlantioMapper, pendente | PlantioService, pendente | PlantioController, pendente |
+| Plantio | V3__criar_plantios.sql | Plantio | PlantioRepository | PlantioRequestDTO / PlantioResponseDTO / ColheitaRequestDTO | PlantioMapper | PlantioService | PlantioController |
 
-Infraestrutura implementada: Application, OpenApiConfig, ApiExceptionHandler, ErroDTO, CampoErroDTO, RecursoNaoEncontradoException e RegraDeNegocioException. TalhaoNaoEncontradoException e CulturaNaoEncontradaException especializam o erro 404. A exceção de Plantio ainda será criada. As exceções ficam em service, conforme o template da disciplina.
+Infraestrutura implementada: Application, OpenApiConfig, ApiExceptionHandler, ErroDTO, CampoErroDTO, RecursoNaoEncontradoException e RegraDeNegocioException. TalhaoNaoEncontradoException e CulturaNaoEncontradaException especializam o erro 404. PlantioNaoEncontradoException especializa o erro 404 de Plantio. As exceções ficam em service, conforme o template da disciplina.
 
 ## Entidades
 
@@ -81,7 +81,7 @@ Infraestrutura implementada: Application, OpenApiConfig, ApiExceptionHandler, Er
 |---|---|---|
 | Talhão | Área física de cultivo em hectares, com indicação de irrigação | Poderá receber vários plantios |
 | Cultura | Cultivo com ciclo estimado e exigência de irrigação | Poderá aparecer em vários plantios |
-| Plantio (planejado) | Ocupação de parte de um talhão por uma cultura | Pertencerá a um talhão e uma cultura |
+| Plantio | Ocupação de parte de um talhão por uma cultura | Pertence a um talhão e uma cultura |
 
 Os relacionamentos ainda não existem no banco nem no código. Atributos, tipos e diagrama estão em [docs/modelo-de-dominio.md](docs/modelo-de-dominio.md).
 
@@ -130,11 +130,11 @@ Campo inválido retorna 400; ID inexistente retorna 404. Exemplo de nome vazio, 
 }
 ```
 
-JSON ilegível e ID não numérico também retornam 400. As futuras regras de Plantio usarão RegraDeNegocioException, com mensagem explicativa e campos vazio.
+JSON ilegível e ID não numérico também retornam 400. As regras de Plantio usam RegraDeNegocioException, com mensagem explicativa e campos vazio.
 
-### As planejadas
+### Plantio e colheita
 
-Estão no contrato, mas ainda não respondem.
+Implementadas no código; execução local ainda precisa ser validada.
 
 | Recurso | O que vai fazer |
 |---|---|
@@ -184,11 +184,11 @@ Para parar: Ctrl+C na API e docker compose stop no banco. Alterações em tabela
 
 | Parte | Situação |
 |---|---|
-| Desenho | Problema, regras, modelo, diagrama e contrato documentados; Plantio explicitamente planejado |
-| Estrutura | Talhão e Cultura com todas as camadas; Plantio ainda sem arquivos |
-| API e regras | Cadastro e consultas de Talhão e Cultura implementados; testes manuais de Cultura confirmados; R1–R3 pendentes |
+| Desenho | Problema, regras, modelo, diagrama e contrato documentados; Plantio implementado |
+| Estrutura | Talhão e Cultura com todas as camadas; Plantio com todas as camadas |
+| API e regras | Cadastro e consultas de Talhão e Cultura implementados; testes manuais de Cultura confirmados; R1–R3 implementadas; testes de execução pendentes |
 
-**Ainda não funciona:** cadastro de Plantio, registro de colheita, relacionamentos e regras de ocupação, irrigação e previsão. Não há testes automatizados implementados. Falta conferir a entrega completa em clone limpo com JDK 25 e integrar as alterações no GitHub.
+Plantio e colheita estão implementados. Oito testes unitários foram adicionados, mas não executados aqui: o Maven não conseguiu acessar o repositório de dependências e o ambiente possui Java 17, não 25. Falta validar HTTP, migration e concorrência no PostgreSQL e integrar no GitHub. Veja [a explicação e o roteiro de Thiago](docs/parte-thiago.md).
 
 ## Documentação
 

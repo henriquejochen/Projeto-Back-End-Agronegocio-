@@ -1,3 +1,7 @@
+> Atualização de Thiago: Plantio e colheita foram implementados nesta cópia.
+> Veja [parte-thiago.md](parte-thiago.md) para os arquivos, regras e verificação pendente.
+> Os registros abaixo foram preservados como histórico da base recebida.
+
 # Divisão da equipe
 
 Cada integrante implementa, testa e commita a própria parte. A base atual contém Talhão e Cultura implementados. Os testes manuais de Cultura foram confirmados por Henrique; Plantio e suas regras ainda estão pendentes. As listas abaixo mantêm as responsabilidades acordadas, sem afirmar que commits ou integrações já foram realizados.

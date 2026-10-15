@@ -1,3 +1,7 @@
+> Atualização de Thiago: Plantio e colheita foram implementados nesta cópia.
+> Veja [parte-thiago.md](parte-thiago.md) para os arquivos, regras e verificação pendente.
+> Os registros abaixo foram preservados como histórico da base recebida.
+
 # Modelo de domínio
 
 Responsável: Henrique Jochen, em alinhamento com Thiago para Plantio.

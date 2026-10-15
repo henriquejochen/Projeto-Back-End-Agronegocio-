@@ -1,6 +1,6 @@
 // CAMADA: Controller
 // RESPONSABILIDADE: padroniza os erros HTTP da API.
-// ROTAS ATENDIDAS: /talhoes e /culturas (tratamento de erros), conforme docs/contrato-da-api.md.
+// ROTAS ATENDIDAS: /talhoes, /culturas e /plantios (tratamento de erros), conforme docs/contrato-da-api.md.
 // SITUAÇÃO: implementada.
 package api.controller;
 import java.time.LocalDateTime;
