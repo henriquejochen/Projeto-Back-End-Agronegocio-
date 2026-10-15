@@ -2,7 +2,7 @@
 
 Base padrão: http://localhost:8080. Ao iniciar com --server.port=8081, use http://localhost:8081, como nos testes manuais de Cultura. JSON em camelCase, datas yyyy-MM-dd, áreas em hectares com até duas casas decimais.
 
-Talhão e Cultura estão implementados. A seção de Plantio define o contrato planejado e suas rotas ainda não estão disponíveis. Exemplos de IDs e horários são ilustrativos.
+Talhão, Cultura e Plantio estão implementados. Cadastro, consultas e colheita de Plantio foram verificados em testes de integração com PostgreSQL. Exemplos de IDs e horários são ilustrativos.
 
 ## Convenções
 
@@ -25,15 +25,17 @@ Talhão e Cultura estão implementados. A seção de Plantio define o contrato p
 | POST | /culturas | Cadastra cultura | CulturaRequestDTO | CulturaResponseDTO | 201 | 400 | sim |
 | GET | /culturas | Lista por ID | Nenhuma | Lista de CulturaResponseDTO | 200 | — | sim |
 | GET | /culturas/{id} | Busca cultura | ID no caminho | CulturaResponseDTO | 200 | 400, 404 | sim |
-| POST | /plantios | Registra plantio | PlantioRequestDTO | PlantioResponseDTO | 201 | 400, 404 | não |
-| PUT | /plantios/{id}/colher | Registra colheita | ColheitaRequestDTO | PlantioResponseDTO | 200 | 400, 404 | não |
+| POST | /plantios | Registra plantio | PlantioRequestDTO | PlantioResponseDTO | 201 | 400, 404 | sim |
+| GET | /plantios | Lista por ID | Nenhuma | Lista de PlantioResponseDTO | 200 | — | sim |
+| GET | /plantios/{id} | Busca plantio | ID no caminho | PlantioResponseDTO | 200 | 400, 404 | sim |
+| PUT | /plantios/{id}/colher | Registra colheita | ColheitaRequestDTO | PlantioResponseDTO | 200 | 400, 404 | sim |
 
 ### Rotas das regras de negócio
 
 | Verbo | Caminho | Regra | Sucesso | Erros | Situação |
 |---|---|---|---|---|---|
-| POST | /plantios | R1 (área), R2 (irrigação), R3 (previsão) | 201 | 400, 404 | Planejada |
-| PUT | /plantios/{id}/colher | Impedir repetição e datas inválidas; liberar área | 200 | 400, 404 | Planejada |
+| POST | /plantios | R1 (área), R2 (irrigação), R3 (previsão) | 201 | 400, 404 | Implementada |
+| PUT | /plantios/{id}/colher | Impedir repetição e datas inválidas; liberar área | 200 | 400, 404 | Implementada |
 
 Edição e exclusão genéricas não fazem parte do escopo. As rotas de colheita acima são necessárias para o fluxo de negócio.
 
@@ -45,9 +47,9 @@ Edição e exclusão genéricas não fazem parte do escopo. As rotas de colheita
 | TalhaoResponseDTO | saída | id, nome, areaHectares, irrigado | Implementado |
 | CulturaRequestDTO | entrada | nome, cicloDias, exigeIrrigacao | Nome não vazio até 100 caracteres; ciclo obrigatório de 1 a 3650; Boolean obrigatório |
 | CulturaResponseDTO | saída | id, nome, cicloDias, exigeIrrigacao | Implementado |
-| PlantioRequestDTO | entrada | talhaoId, culturaId, areaHectares, dataPlantio | Planejado: IDs positivos obrigatórios, área com limites de Talhão e data obrigatória |
-| PlantioResponseDTO | saída | id, talhao (TalhaoResponseDTO), cultura (CulturaResponseDTO), areaHectares, dataPlantio, previsaoColheita, dataColheita | Planejado: objetos DTO aninhados, previsão calculada e colheita inicialmente nula |
-| ColheitaRequestDTO | entrada | dataColheita | Planejado: obrigatória e não futura; Service impede data anterior ao plantio e segunda colheita |
+| PlantioRequestDTO | entrada | talhaoId, culturaId, areaHectares, dataPlantio | Implementado: IDs positivos obrigatórios, área com limites de Talhão e data obrigatória |
+| PlantioResponseDTO | saída | id, talhao (TalhaoResponseDTO), cultura (CulturaResponseDTO), areaHectares, dataPlantio, previsaoColheita, dataColheita | Implementado: objetos DTO aninhados, previsão calculada e colheita inicialmente nula |
+| ColheitaRequestDTO | entrada | dataColheita | Implementado: obrigatória e não futura; Service impede data anterior ao plantio e segunda colheita |
 
 ## Exemplos e comportamento
 
@@ -161,16 +163,16 @@ Exemplo de resposta para ID inexistente:
 }
 ~~~
 
-## Plantio — planejado para Thiago
+## Plantio — implementado
 
-As respostas e regras abaixo são requisitos para implementação; não são evidências de funcionamento atual.
+R1, R2 e R3 são aplicadas por PlantioService.criar. O Service bloqueia o talhão durante a transação antes de consultar a ocupação; a colheita usa o mesmo bloqueio antes de bloquear o plantio. Assim, cadastros e colheitas concorrentes são serializados por talhão.
 
 POST /plantios recebe:
 ~~~json
 {"talhaoId":1,"culturaId":1,"areaHectares":4.50,"dataPlantio":"2026-10-01"}
 ~~~
 
-Retorna 201:
+Retorna 201 com Location: /plantios/{id}:
 ~~~json
 {
   "id": 1,
@@ -189,12 +191,43 @@ Esta etapa permite data de plantio futura, mas o cadastro ocupa a área imediata
 
 R1: área ativa + nova área não ultrapassa a área do talhão. R2: exigência de irrigação deve ser atendida. Violações retornam 400 com mensagem explicativa. Referências inexistentes retornam 404. R3 soma cicloDias à dataPlantio.
 
+GET /plantios retorna 200 com lista de PlantioResponseDTO ordenada por ID, ou [] se vazia. GET /plantios/{id} retorna 200 com o mesmo objeto mostrado acima; ID inexistente retorna 404, e ID não numérico retorna 400.
+
 PUT /plantios/{id}/colher recebe:
 ~~~json
 {"dataColheita":"2026-10-11"}
 ~~~
 
-Retornará 200 com o formato de resposta de plantio (incluindo talhao e cultura como DTOs) e dataColheita preenchida. A data será obrigatória, não futura e não anterior ao plantio. Segunda colheita retornará 400; plantio inexistente, 404. A previsão original não mudará. Thiago deverá validar os exemplos após a implementação.
+Retorna 200 com o formato de resposta de plantio (incluindo talhao e cultura como DTOs) e dataColheita preenchida. A data é obrigatória, não futura e não anterior ao plantio. Segunda colheita retorna 400; plantio inexistente, 404. A previsão original não muda. O Service verifica datas usando America/Sao_Paulo e mantém as regras temporais de colheita na camada de negócio.
+
+Exemplo da resposta de colheita (para o plantio acima):
+
+~~~json
+{
+  "id": 1,
+  "talhao": {"id": 1, "nome": "Talhão Norte", "areaHectares": 10.50, "irrigado": true},
+  "cultura": {"id": 1, "nome": "Milho", "cicloDias": 120, "exigeIrrigacao": false},
+  "areaHectares": 4.50,
+  "dataPlantio": "2026-10-01",
+  "previsaoColheita": "2027-01-29",
+  "dataColheita": "2026-10-11"
+}
+~~~
+
+Exemplo de R1 violada, com horário ilustrativo:
+
+~~~json
+{
+  "status": 400,
+  "erro": "Bad Request",
+  "mensagem": "R1: a área dos plantios ativos não pode ultrapassar a área do talhão",
+  "caminho": "/plantios",
+  "timestamp": "2026-10-15T00:00:00",
+  "campos": []
+}
+~~~
+
+R2 retorna mensagem indicando necessidade de talhão irrigado. Colheita repetida, anterior ao plantio ou futura retorna 400 com a respectiva explicação. R3 calcula a previsão; datas que não permitem esse cálculo retornam 400.
 
 ## Erros
 

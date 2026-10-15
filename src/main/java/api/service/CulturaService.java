@@ -1,6 +1,6 @@
 // CAMADA: Service
 // RESPONSABILIDADE: coordena cadastro e consultas de culturas.
-// REGRAS: não implementa R1–R3; regras de Plantio ainda pendentes.
+// REGRAS: R1–R3 pertencem ao PlantioService; esta classe não aplica essas regras.
 // ROTAS ATENDIDAS: /culturas, conforme docs/contrato-da-api.md.
 // SITUAÇÃO: implementada.
 package api.service;

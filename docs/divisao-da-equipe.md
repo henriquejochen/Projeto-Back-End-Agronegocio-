@@ -1,6 +1,6 @@
 # Divisão da equipe
 
-Cada integrante implementa, testa e commita a própria parte. A base atual contém Talhão e Cultura implementados. Os testes manuais de Cultura foram confirmados por Henrique; Plantio e suas regras ainda estão pendentes. As listas abaixo mantêm as responsabilidades acordadas, sem afirmar que commits ou integrações já foram realizados.
+Cada integrante implementa, testa e commita a própria parte. A base atual contém Talhão, Cultura e Plantio implementados. Os testes manuais de Cultura foram confirmados por Henrique; Plantio foi implementado nesta sessão a pedido de Henrique e validado por 9 testes de integração. A equipe deve revisar e integrar o trabalho; as responsabilidades abaixo não atribuem autoria de commits. As listas abaixo mantêm as responsabilidades acordadas, sem afirmar que commits ou integrações já foram realizados.
 
 ## Kauã Ghizzo — preparação e Talhão
 
@@ -18,7 +18,7 @@ Commits sugeridos:
 
 ## Henrique Jochen — Cultura e modelo de domínio
 
-Situação atual: V2, entidade, camadas, exceção 404 e contrato de Cultura implementados; testes manuais registrados em validacao.md. O modelo de domínio agora inclui tipos, obrigatoriedade e diagrama ER, distinguindo Plantio planejado das tabelas existentes. Falta revisar os relacionamentos com Thiago durante a implementação e confirmar os testes complementares e a integração no Git.
+Situação atual: V2, entidade, camadas, exceção 404 e contrato de Cultura implementados; testes manuais registrados em validacao.md. O modelo de domínio inclui tipos, obrigatoriedade, diagrama ER e os relacionamentos implementados de Plantio. Falta revisar a entrega com Thiago e confirmar os testes complementares e a integração no Git.
 
 - Criar V2__criar_culturas.sql e Cultura conforme os campos combinados.
 - Criar CulturaRepository, CulturaRequestDTO, CulturaResponseDTO, CulturaMapper, CulturaService, CulturaController e CulturaNaoEncontradaException.
@@ -32,6 +32,8 @@ Commits sugeridos:
 3. docs: completar modelo de dominio e contrato de culturas
 
 ## Thiago Devilla — Plantio e regras
+
+Situação atual: V3, camadas de Plantio, R1–R3 e colheita implementados nesta sessão a pedido de Henrique. Cabe ao responsável acordado revisar, compreender e demonstrar a implementação com a equipe. O planejamento abaixo descreve o escopo entregue, não tarefas ainda ausentes.
 
 - Criar V3__criar_plantios.sql com duas chaves estrangeiras e Plantio com relacionamentos JPA.
 - Criar Repository, DTOs de plantio e colheita, Mapper, Service, Controller e PlantioNaoEncontradoException.
@@ -49,7 +51,7 @@ Commits sugeridos:
 
 ## Integração
 
-1. Talhão e Cultura estão disponíveis nesta cópia local. Thiago desenvolve Plantio usando o contrato combinado; a equipe confere a integração no repositório.
+1. Talhão, Cultura e Plantio estão disponíveis nesta cópia local. A equipe revisa a implementação e os testes antes de integrar no repositório.
 2. Reservar V1 para Talhão, V2 para Cultura e V3 para Plantio. Integrar V2 antes da V3. Não alterar migrations já aplicadas.
 3. Cada pessoa parte da main atualizada e usa sua branch: feat/talhoes, feat/culturas ou feat/plantios.
 4. Configurar o próprio nome/e-mail no Git. Revisar, testar, commitar e enviar a própria branch. Preservar a autoria na integração.
