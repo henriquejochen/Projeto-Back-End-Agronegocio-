@@ -1,3 +1,6 @@
+// CAMADA: Model
+// RESPONSABILIDADE: representa uma área de cultivo e sua disponibilidade de irrigação.
+// SITUAÇÃO: implementada.
 package api.model;
 
 import java.math.BigDecimal;
@@ -8,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-// Model: representa uma área de cultivo e sua disponibilidade de irrigação. Implementada.
 @Entity
 @Table(name = "talhoes")
 public class Talhao {

@@ -1,3 +1,6 @@
+// CAMADA: DTO
+// RESPONSABILIDADE: valida os dados de cadastro do talhão.
+// SITUAÇÃO: implementada.
 package api.dto;
 
 import java.math.BigDecimal;
@@ -7,7 +10,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-// DTO: valida os dados de cadastro do talhão. Implementado.
 public record TalhaoRequestDTO(
         @NotBlank(message = "Nome é obrigatório")
         @Size(max = 100, message = "Nome deve ter até 100 caracteres")

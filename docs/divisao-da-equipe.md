@@ -1,6 +1,6 @@
 # Divisão da equipe
 
-Cada integrante implementa, testa e commita a própria parte. Esta base contém a preparação e Talhão para Kauã. Henrique e Thiago recebem tarefas de implementação.
+Cada integrante implementa, testa e commita a própria parte. A base atual contém Talhão e Cultura implementados. Os testes manuais de Cultura foram confirmados por Henrique; Plantio e suas regras ainda estão pendentes. As listas abaixo mantêm as responsabilidades acordadas, sem afirmar que commits ou integrações já foram realizados.
 
 ## Kauã Ghizzo — preparação e Talhão
 
@@ -17,6 +17,8 @@ Commits sugeridos:
 3. feat: implementar cadastro e consultas de talhoes
 
 ## Henrique Jochen — Cultura e modelo de domínio
+
+Situação atual: V2, entidade, camadas, exceção 404 e contrato de Cultura implementados; testes manuais registrados em validacao.md. O modelo de domínio agora inclui tipos, obrigatoriedade e diagrama ER, distinguindo Plantio planejado das tabelas existentes. Falta revisar os relacionamentos com Thiago durante a implementação e confirmar os testes complementares e a integração no Git.
 
 - Criar V2__criar_culturas.sql e Cultura conforme os campos combinados.
 - Criar CulturaRepository, CulturaRequestDTO, CulturaResponseDTO, CulturaMapper, CulturaService, CulturaController e CulturaNaoEncontradaException.
@@ -47,14 +49,14 @@ Commits sugeridos:
 
 ## Integração
 
-1. Kauã entrega a base e Talhão. Henrique desenvolve Cultura. Thiago pode começar pela estrutura usando o contrato combinado.
+1. Talhão e Cultura estão disponíveis nesta cópia local. Thiago desenvolve Plantio usando o contrato combinado; a equipe confere a integração no repositório.
 2. Reservar V1 para Talhão, V2 para Cultura e V3 para Plantio. Integrar V2 antes da V3. Não alterar migrations já aplicadas.
 3. Cada pessoa parte da main atualizada e usa sua branch: feat/talhoes, feat/culturas ou feat/plantios.
 4. Configurar o próprio nome/e-mail no Git. Revisar, testar, commitar e enviar a própria branch. Preservar a autoria na integração.
 5. Cada um atualiza o status de sua parte no README e suas rotas no contrato. Alterações de campos exigem alinhar modelo, código e contrato.
 6. Os três preenchem a autoavaliação depois dos testes e garantem a main pronta antes da Aula 11.
 
-Não é necessário ter a mesma quantidade de commits. Eles devem representar entregas reais e compreensíveis. Toda classe deve ter um comentário curto sobre camada, responsabilidade e situação, sem comentários linha a linha.
+Não é necessário ter a mesma quantidade de commits. Eles devem representar entregas reais e compreensíveis. Toda classe deve ter o cabeçalho do template: CAMADA, RESPONSABILIDADE e SITUAÇÃO. Services também indicam REGRAS; Controllers e Services indicam ROTAS ATENDIDAS. O DTO de entrada de Plantio recebe IDs; a resposta usa TalhaoResponseDTO e CulturaResponseDTO aninhados.
 
 ## Apresentação
 

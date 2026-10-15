@@ -1,103 +1,201 @@
 # Controle de Plantios
 
-Projeto de Backend — SATC. Tema: Agronegócio. Etapa 1 em desenvolvimento, a partir do template da disciplina.
+Backend para produtores e responsáveis pelo manejo cadastrarem talhões e culturas. O sistema está sendo desenvolvido para controlar a ocupação das áreas, a necessidade de irrigação e a previsão de colheita.
+
+Projeto Final da disciplina de Backend (Engenharia de Software, SATC). **Etapa 1: arquitetura do backend.**
+
+## Índice
+
+- [Integrantes](#integrantes)
+- [O problema](#o-problema)
+- [Tecnologias](#tecnologias)
+- [Arquitetura](#arquitetura)
+- [Entidades](#entidades)
+- [Rotas](#rotas)
+- [Como executar](#como-executar)
+- [Situação do projeto](#situação-do-projeto)
+- [Documentação](#documentação)
 
 ## Integrantes
 
-| Integrante | Responsabilidade |
-|---|---|
-| Kauã Ghizzo | Preparação, Talhão, README e verificação da API simples |
-| Henrique Jochen | Cultura e modelo de domínio |
-| Thiago Devilla | Plantio, regras de negócio e exemplos no contrato |
+| Nome | GitHub | Responsabilidade |
+|---|---|---|
+| Kauã Ghizzo | [@KauaGhizzo](https://github.com/KauaGhizzo) | Preparação, Talhão e execução |
+| Henrique Jochen | [@henriquejochen](https://github.com/henriquejochen) | Cultura e modelo de domínio |
+| Thiago Devilla | [@thiagodevilla](https://github.com/thiagodevilla) | Plantio e regras de negócio |
 
-Veja [a divisão detalhada](docs/divisao-da-equipe.md).
+Veja a [divisão detalhada](docs/divisao-da-equipe.md). As responsabilidades não comprovam autoria de commits ou integração no GitHub.
 
 ## O problema
 
-O produtor rural precisa saber quanto de cada talhão está ocupado, quais culturas podem ser plantadas nele e quando a colheita é esperada. O sistema registra áreas, culturas e plantios para evitar ocupação acima da capacidade e cultivo sem irrigação necessária.
+**Tema sorteado:** Agronegócio.
 
-Quem usa: o produtor ou responsável pelo manejo cadastra áreas e culturas, registra plantios e conclui colheitas.
+O produtor rural precisa saber quanto de cada talhão está ocupado, quais culturas podem ser plantadas nele e quando a colheita é esperada. Sem esse controle, pode planejar plantios acima da área disponível ou cultivar uma cultura que exige irrigação em um talhão sem essa estrutura. A proposta registra áreas, culturas e plantios e libera a área quando a colheita é registrada. Atualmente, apenas cadastro e consultas de Talhão e Cultura estão implementados.
 
-| Regra | Comportamento planejado | Implementação prevista |
-|---|---|---|
-| R1 | A soma das áreas dos plantios ativos, incluindo o novo, não pode ultrapassar a área do talhão. Igualar a área é permitido. | PlantioService.criar — Thiago |
-| R2 | Cultura que exige irrigação só pode ser plantada em talhão irrigado. | PlantioService.criar — Thiago |
-| R3 | A previsão de colheita é calculada pela data de plantio mais o ciclo da cultura em dias. | PlantioService.criar — Thiago |
+**Quem usa o sistema:**
 
-R1 e R2 retornam 400 com a regra explicada. R3 é um cálculo automático. Plantio ativo não tem data de colheita; registrar a colheita libera sua área. A colheita não pode anteceder o plantio nem ser registrada duas vezes.
+| Quem | O que faz no sistema |
+|---|---|
+| Produtor ou responsável pelo manejo | Cadastra talhões e culturas; poderá registrar plantios e colheitas quando Plantio estiver implementado |
 
-Fora do escopo: frontend, autenticação, estoque, meteorologia, edição e exclusão de cadastros. O ciclo é uma estimativa informada pelo produtor.
+**Regras de negócio:** especificadas, ainda não implementadas. Validações de campos obrigatórios e números positivos nos DTOs não substituem essas regras.
+
+| # | Regra | Onde está no código | Rota que usa |
+|---|---|---|---|
+| R1 | A soma das áreas dos plantios ativos, incluindo o novo, não pode ultrapassar a área do talhão; igualdade é permitida | Pendente: PlantioService.criar | POST /plantios (planejada) |
+| R2 | Cultura que exige irrigação só pode ser plantada em talhão irrigado | Pendente: PlantioService.criar | POST /plantios (planejada) |
+| R3 | A previsão de colheita é calculada pela data de plantio mais o ciclo da cultura em dias | Pendente: PlantioService.criar | POST /plantios (planejada) |
+
+R1 e R2 violadas deverão retornar 400 com a regra explicada. R3 será um cálculo automático. Plantio ativo terá data de colheita nula; registrar a colheita liberará sua área. A colheita não poderá anteceder o plantio, ser futura ou ser registrada duas vezes. O cadastro deverá proteger o limite de área também em requisições simultâneas.
+
+**Fora do escopo:** frontend, autenticação, estoque, meteorologia, edição e exclusão de cadastros. Registrar colheita será uma operação própria, não uma edição genérica. O ciclo informado pelo produtor é uma estimativa.
 
 ## Tecnologias
 
-Java 25, Spring Boot 3.5.16, Maven Wrapper, PostgreSQL 16 via Docker Compose, JPA, Bean Validation, Flyway e Swagger UI. Versões mantidas da base da equipe.
+| O quê | Qual |
+|---|---|
+| Linguagem | Java 25 definido no pom.xml |
+| Framework | Spring Boot 3.5.16: Web, Validation e Data JPA |
+| Banco de dados | PostgreSQL 16, em Docker Compose |
+| Migrations | Flyway |
+| Documentação da API | springdoc-openapi 2.9.1 e Swagger UI |
+| Build | Maven Wrapper |
 
 ## Arquitetura
 
-Controller → Service → Repository → PostgreSQL. O Service usa o Mapper para converter entidades e DTOs. Controllers usam somente DTOs; regras ficam no Service; tabelas são criadas por migrations. Dependências são injetadas pelo construtor.
+Controller → Service → Repository → PostgreSQL. O Service usa o Mapper para converter entidades, DTOs e listas. Controllers usam somente DTOs; regras ficam no Service; tabelas são criadas por migrations. Dependências são injetadas pelo construtor.
 
-| Entidade | Migration | Model | Repository | DTOs | Mapper | Service | Controller | Situação |
-|---|---|---|---|---|---|---|---|---|
-| Talhão | V1__criar_talhoes.sql | Talhao | TalhaoRepository | TalhaoRequestDTO / TalhaoResponseDTO | TalhaoMapper | TalhaoService | TalhaoController | Implementada |
-| Cultura | V2__criar_culturas.sql | Cultura | CulturaRepository | CulturaRequestDTO / CulturaResponseDTO | CulturaMapper | CulturaService | CulturaController | Planejada: arquivos não criados |
-| Plantio | V3__criar_plantios.sql | Plantio | PlantioRepository | PlantioRequestDTO / PlantioResponseDTO / ColheitaRequestDTO | PlantioMapper | PlantioService | PlantioController | Planejada: arquivos não criados |
+**Mapa da estrutura:** todas as entidades do modelo, incluindo Plantio ainda planejado. “Pendente” significa que o arquivo não existe; não equivale a classe montada.
 
-Infraestrutura: Application, OpenApiConfig, ApiExceptionHandler, ErroDTO, CampoErroDTO, RecursoNaoEncontradoException e RegraDeNegocioException. TalhaoNaoEncontradoException especializa o 404. Cultura e Plantio terão suas exceções próprias.
+| Entidade | Migration | Model | Repository | DTOs | Mapper | Service | Controller |
+|---|---|---|---|---|---|---|---|
+| Talhão | V1__criar_talhoes.sql, pronta | Talhao, implementada | TalhaoRepository, implementado | TalhaoRequestDTO / TalhaoResponseDTO, implementados | TalhaoMapper, implementado | TalhaoService, implementado | TalhaoController, implementado |
+| Cultura | V2__criar_culturas.sql, pronta | Cultura, implementada | CulturaRepository, implementado | CulturaRequestDTO / CulturaResponseDTO, implementados | CulturaMapper, implementado | CulturaService, implementado | CulturaController, implementado |
+| Plantio | V3__criar_plantios.sql, pendente | Plantio, pendente | PlantioRepository, pendente | PlantioRequestDTO / PlantioResponseDTO / ColheitaRequestDTO, pendentes | PlantioMapper, pendente | PlantioService, pendente | PlantioController, pendente |
+
+Infraestrutura implementada: Application, OpenApiConfig, ApiExceptionHandler, ErroDTO, CampoErroDTO, RecursoNaoEncontradoException e RegraDeNegocioException. TalhaoNaoEncontradoException e CulturaNaoEncontradaException especializam o erro 404. A exceção de Plantio ainda será criada. As exceções ficam em service, conforme o template da disciplina.
 
 ## Entidades
 
-- Talhão: área física de cultivo em hectares, com indicação de irrigação.
-- Cultura: cultivo cadastrado com ciclo estimado e exigência de irrigação.
-- Plantio: ocupação de parte de um talhão por uma cultura.
+| Entidade | O que representa | Como se relaciona |
+|---|---|---|
+| Talhão | Área física de cultivo em hectares, com indicação de irrigação | Poderá receber vários plantios |
+| Cultura | Cultivo com ciclo estimado e exigência de irrigação | Poderá aparecer em vários plantios |
+| Plantio (planejado) | Ocupação de parte de um talhão por uma cultura | Pertencerá a um talhão e uma cultura |
 
-Cada plantio pertence a um talhão e uma cultura; ambos podem aparecer em vários plantios.
+Os relacionamentos ainda não existem no banco nem no código. Atributos, tipos e diagrama estão em [docs/modelo-de-dominio.md](docs/modelo-de-dominio.md).
 
 ## Rotas
 
-| Método | Caminho | Sucesso | Erros | Situação |
-|---|---|---|---|---|
-| POST | /talhoes | 201 | 400 | Implementada |
-| GET | /talhoes | 200 | — | Implementada |
-| GET | /talhoes/{id} | 200 | 400, 404 | Implementada |
-| POST | /culturas | 201 | 400 | Henrique implementará |
-| GET | /culturas | 200 | — | Henrique implementará |
-| GET | /culturas/{id} | 200 | 400, 404 | Henrique implementará |
-| POST | /plantios | 201 | 400, 404 | Thiago implementará |
-| PUT | /plantios/{id}/colher | 200 | 400, 404 | Thiago implementará |
+### As que já funcionam
+
+Implementadas no código; os testes manuais confirmados e os cenários pendentes estão em [validação](docs/validacao.md).
+
+| Verbo | Caminho | O que faz | Regra | Sucesso | Erros |
+|---|---|---|---|---|---|
+| POST | /talhoes | Cadastra talhão | Validações do DTO | 201 | 400 |
+| GET | /talhoes | Lista talhões por ID | Nenhuma | 200 | — |
+| GET | /talhoes/{id} | Consulta talhão | Nenhuma | 200 | 400, 404 |
+| POST | /culturas | Cadastra cultura | Validações do DTO | 201 | 400 |
+| GET | /culturas | Lista culturas por ID | Nenhuma | 200 | — |
+| GET | /culturas/{id} | Consulta cultura | Nenhuma | 200 | 400, 404 |
+
+Exemplo de requisição:
+
+```http
+POST /culturas
+Content-Type: application/json
+
+{"nome":"Milho","cicloDias":120,"exigeIrrigacao":false}
+```
+
+Resposta: 201 Created, com Location: /culturas/1. O ID é gerado pelo banco e pode variar.
+
+```json
+{"id":1,"nome":"Milho","cicloDias":120,"exigeIrrigacao":false}
+```
+
+### Erros
+
+Campo inválido retorna 400; ID inexistente retorna 404. Exemplo de nome vazio, com horário ilustrativo:
+
+```json
+{
+  "status": 400,
+  "erro": "Bad Request",
+  "mensagem": "Dados inválidos: confira a lista de campos",
+  "caminho": "/culturas",
+  "timestamp": "2026-10-14T23:30:00",
+  "campos": [{"campo": "nome", "mensagem": "Nome é obrigatório"}]
+}
+```
+
+JSON ilegível e ID não numérico também retornam 400. As futuras regras de Plantio usarão RegraDeNegocioException, com mensagem explicativa e campos vazio.
+
+### As planejadas
+
+Estão no contrato, mas ainda não respondem.
+
+| Recurso | O que vai fazer |
+|---|---|
+| POST /plantios | Registrar plantio aplicando R1, R2 e R3 |
+| PUT /plantios/{id}/colher | Registrar colheita válida e liberar área |
+
+O contrato completo, os DTOs e exemplos estão em [docs/contrato-da-api.md](docs/contrato-da-api.md).
 
 ## Como executar
 
-Pré-requisitos: JDK 25 configurado em JAVA_HOME, Docker Desktop em execução e portas 5437 e 8080 disponíveis. Na raiz do projeto:
+Pré-requisitos: JDK 25 configurado em JAVA_HOME, Docker Desktop aberto, Git e portas 5437 e 8080 disponíveis. Na primeira execução é necessário acesso à internet para baixar Maven, dependências e imagem do banco.
 
-~~~powershell
+Para obter uma cópia nova:
+
+```powershell
+git clone https://github.com/henriquejochen/Projeto-Back-End-Agronegocio-.git
+cd Projeto-Back-End-Agronegocio-
+```
+
+Se já baixou o ZIP, abra a pasta que contém pom.xml, docker-compose.yml e mvnw.cmd. Ela pode estar dentro de outra pasta com o mesmo nome. Não precisa clonar novamente.
+
+```powershell
 docker compose up -d --wait
 .\mvnw.cmd spring-boot:run
-~~~
+```
 
-No Linux/macOS: ./mvnw spring-boot:run. O banco local usa nome, usuário e senha "projeto", conforme o Compose. Flyway cria as tabelas e Hibernate valida o schema.
+No Linux/macOS, use ./mvnw spring-boot:run. O banco local usa nome, usuário e senha projeto. Flyway aplica as migrations; Hibernate valida o schema. Não crie tabelas manualmente.
 
-- Swagger: http://localhost:8080/swagger-ui.html
-- OpenAPI para importar no Postman: http://localhost:8080/v3/api-docs
+| Endereço | O que é |
+|---|---|
+| http://localhost:8080/swagger-ui.html | Swagger UI para testar as rotas |
+| http://localhost:8080/v3/api-docs | Contrato OpenAPI para importar no Postman |
 
-POST /talhoes:
+No Postman: Import → Link → endereço de /v3/api-docs.
 
-~~~json
-{"nome":"Talhão Norte","areaHectares":10.50,"irrigado":true}
-~~~
+Se a porta 8080 estiver ocupada:
 
-Consulte a listagem e o id retornado. Nome vazio deve retornar 400; id inexistente, 404. Listagem sem registros retorna [].
+```powershell
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8081"
+```
 
-Para encerrar: Ctrl+C na API e docker compose stop. Alterações em tabelas já criadas exigem migration nova.
+Nesse caso, use http://localhost:8081/swagger-ui.html e http://localhost:8081/v3/api-docs. A porta 8081 foi usada nos testes manuais de Cultura. Mantenha o terminal aberto durante os testes.
+
+Para parar: Ctrl+C na API e docker compose stop no banco. Alterações em tabelas já criadas exigem migration nova; não altere V1 ou V2 já aplicadas.
 
 ## Situação do projeto
 
-Preparação e Talhão implementados. Cultura, Plantio, relacionamentos e as três regras dependem das entregas de Henrique e Thiago. Esta versão não é a entrega final da etapa.
+| Parte | Situação |
+|---|---|
+| Desenho | Problema, regras, modelo, diagrama e contrato documentados; Plantio explicitamente planejado |
+| Estrutura | Talhão e Cultura com todas as camadas; Plantio ainda sem arquivos |
+| API e regras | Cadastro e consultas de Talhão e Cultura implementados; testes manuais de Cultura confirmados; R1–R3 pendentes |
 
-Veja [validação](docs/validacao.md) para testes realizados e limitações do ambiente.
+**Ainda não funciona:** cadastro de Plantio, registro de colheita, relacionamentos e regras de ocupação, irrigação e previsão. Não há testes automatizados implementados. Falta conferir a entrega completa em clone limpo com JDK 25 e integrar as alterações no GitHub.
 
 ## Documentação
 
-- [Divisão da equipe](docs/divisao-da-equipe.md)
-- [Modelo de domínio](docs/modelo-de-dominio.md)
-- [Contrato da API](docs/contrato-da-api.md)
-- [Autoavaliação](docs/autoavaliacao.md)
+| Documento | O que tem |
+|---|---|
+| [Modelo de domínio](docs/modelo-de-dominio.md) | Entidades, tipos, relacionamentos, diagrama e migrations |
+| [Contrato da API](docs/contrato-da-api.md) | Rotas, DTOs, exemplos e erros |
+| [Autoavaliação](docs/autoavaliacao.md) | P1–P10, marcas, evidências e estimativa provisória |
+| [Validação](docs/validacao.md) | Testes confirmados e cenários pendentes |
+| [Divisão da equipe](docs/divisao-da-equipe.md) | Responsabilidades e integração |

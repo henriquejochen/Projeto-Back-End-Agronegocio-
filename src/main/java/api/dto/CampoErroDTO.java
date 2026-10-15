@@ -1,4 +1,6 @@
-// DTO: identifica um campo inválido. Implementado.
+// CAMADA: DTO
+// RESPONSABILIDADE: identifica um campo inválido.
+// SITUAÇÃO: implementada.
 package api.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Erro de validação de um campo do corpo da requisição")

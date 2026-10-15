@@ -1,4 +1,6 @@
-// DTO: formato comum das respostas de erro. Implementado.
+// CAMADA: DTO
+// RESPONSABILIDADE: formato comum das respostas de erro.
+// SITUAÇÃO: implementada.
 package api.dto;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,4 +1,7 @@
-// Controller: padroniza os erros HTTP da API. Implementado.
+// CAMADA: Controller
+// RESPONSABILIDADE: padroniza os erros HTTP da API.
+// ROTAS ATENDIDAS: /talhoes e /culturas (tratamento de erros), conforme docs/contrato-da-api.md.
+// SITUAÇÃO: implementada.
 package api.controller;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

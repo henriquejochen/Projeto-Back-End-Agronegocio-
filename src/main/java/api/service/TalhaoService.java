@@ -1,3 +1,8 @@
+// CAMADA: Service
+// RESPONSABILIDADE: coordena cadastro e consultas de talhões; atende POST e GET /talhoes.
+// REGRAS: não implementa R1–R3; regras de Plantio ainda pendentes.
+// ROTAS ATENDIDAS: /talhoes, conforme docs/contrato-da-api.md.
+// SITUAÇÃO: implementada.
 package api.service;
 
 import java.util.List;
@@ -9,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// Service: coordena cadastro e consultas de talhões; atende POST e GET /talhoes. Implementado.
 @Service
 public class TalhaoService {
     private final TalhaoRepository repository;
@@ -27,7 +31,7 @@ public class TalhaoService {
 
     @Transactional(readOnly = true)
     public List<TalhaoResponseDTO> listar() {
-        return repository.findAll(Sort.by("id")).stream().map(mapper::toResponse).toList();
+        return mapper.toResponseList(repository.findAll(Sort.by("id")));
     }
 
     @Transactional(readOnly = true)
